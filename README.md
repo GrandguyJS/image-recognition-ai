@@ -1,5 +1,3 @@
-# image-recognition-ai
-
 # 1. File Initializing
 ### 1.1 Install dependencies
 ### 1.2 Download all train and test images from Kaggle
