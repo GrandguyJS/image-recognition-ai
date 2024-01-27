@@ -28,3 +28,17 @@
 ### 4.2 Initialize trained weights and biases
 ### 4.3 Run trough the Data Set
 ### 4.4 Calculate accuracy
+
+> For the reader
+
+1. Use `pip install -r requirements.txt` to download all needed libraries
+
+2. Create your image folder that will contain the image you would like to test
+
+3. Specify the folder path in `main.py`
+
+4. Run `python main.py`
+
+> Contributions
+
+This was a school project me and [TimoI44](https://github.com/TimoI44) did. This wouldn't be possible without him.
