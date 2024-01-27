@@ -1,0 +1,1 @@
+# Convert the test and train images to np arrays
