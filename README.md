@@ -1,3 +1,1 @@
 # image-recognition-ai
-
-HEHEHE
