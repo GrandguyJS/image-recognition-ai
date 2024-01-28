@@ -1,8 +1,16 @@
 # Neural Network Class
 import random
 
+class NeuralNetwork:
+    pass
 
 
+#Class for one layer of the neural network
+#Functions:
+#   -randomize(level)
+#       Randomizes the weights and biases of the level
+#   -feedForward(givenInputs, level)
+#       Calculates and returns the output of the level with the givenInputs
 class Level:
 
     def __init__(self, inputCount, outputCount):
