@@ -1,6 +1,6 @@
 # 1. File Initializing
 -   ### 1.1 Install dependencies
--   ### 1.2 Download all train and test images from Kaggl
+-   ### 1.2 Download all train and test images from Kaggle
 -   ### 1.3 Convert images into 200x200 format
 -   ### 1.4 Convert the formatted images into numpy arrays and specify the label
 -   ### 1.5 Append and save all image and labels
