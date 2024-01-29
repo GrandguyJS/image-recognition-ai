@@ -1,4 +1,4 @@
-# 1. File Initializing
+# 1. File Initializin
 -   ### 1.1 Install dependencies
 -   ### 1.2 Download all train and test images from Kaggle
 -   ### 1.3 Convert images into 200x200 format
