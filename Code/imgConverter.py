@@ -12,8 +12,6 @@ from PIL import Image
 
 def resize_image(path):
     image = Image.open(path) # Open the image
-    if image.size[0] < 200 or image.size[1] < 200:
-        return None
 
     image = image.convert("L") # Convert it to black and white
 
