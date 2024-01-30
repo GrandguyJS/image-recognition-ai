@@ -3,10 +3,8 @@ import os
 
 # Loading the train and test directory
 root_dir = "/Users/grandguymc/Downloads/Cat:Dog/"
-train_dir = f"{root_dir}train/"
-test_dir = f"{root_dir}test/"
-
-os.chdir(root_dir) # Set working folder to root
+train_prefix = f"train/"
+test_prefix = f"test/"
 
 from PIL import Image  
 
@@ -24,11 +22,9 @@ def resize_image(path):
 import random
 
 def get_image_batch(size, train=True):
+    prefix = test_prefix
     if train:
-        prefix = "train/"
-
-    else:
-        prefix = "test/"
+        prefix = train_prefix
         
     directory_list = os.listdir(root_dir + prefix) # If we want to train, get the list of all files in train
     
