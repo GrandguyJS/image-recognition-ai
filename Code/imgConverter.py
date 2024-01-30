@@ -37,7 +37,12 @@ def get_image_batch(size, train=True):
     if train: # If we want to train, we also have to give the right result, so cat or dog
         image_results = [None] * size
         for i,image_name in enumerate(image_name_batch): # Iterate trough all image_names
-            image_results[i] = image_name[:3] # Set the image_result to the first three letters of the image file (dog/cat)
+            
+            if image_name[:3] == "cat":
+                image_results[i] = np.array([0,1]).reshape((-1 ,1)) # Cat
+            else:
+                image_results[i] = np.array([1,0]).reshape((-1 ,1)) # Dog
+
         return image_batch, image_results # Return the image lists and results
     
     return image_batch # Only return the image list as we don't train

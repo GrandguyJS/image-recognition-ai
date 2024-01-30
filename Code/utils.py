@@ -8,3 +8,21 @@ def lerp(A, B, t):
 
 def sigmoid(x):
     return 1 / (1+np.exp(-x))
+
+
+
+def get_loss(predictions, targets):
+    losses = []
+    for i in range(0, len(predictions)):
+        prediction = np.round(predictions[i])
+        
+        if np.array_equal(prediction, targets[i]):
+            losses.append(1)
+        else:
+            losses.append(0)
+
+    loss = sum(losses) / len(losses)
+    return loss
+
+    
+    

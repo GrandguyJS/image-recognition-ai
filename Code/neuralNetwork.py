@@ -21,8 +21,9 @@ class NeuralNetwork:
     # Will return an array of 0 and 1
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(givenInputs, network):
+    def feedForward(givenInputs, network): # Input correct result
         # Calculates the first level
+        
         outputs = Level.feedForward(givenInputs, network.levels[0])
 
         # Loops through all following levels and updates outputs
@@ -59,7 +60,10 @@ class NeuralNetwork:
                         amount # Amount it should change in that direction
                     )
 
-
+    @staticmethod
+    def get_accuracy(output, true_output):
+        loss = utils.get_loss(output, true_output)
+        return loss
 #---Class for one layer of the neural network---
 class Level:
 
@@ -77,17 +81,6 @@ class Level:
 
         level.biases = np.zeros((len(level.outputs), 1))
 
-        """
-        # Sets every weight of the level to a random value between -1 and 1
-        for i in range(0, len(level.inputs)):
-            for j in range(0, len(level.outputs)):
-                level.weights[i][j] = random.random() * 2 -1 #Set weight to a random value between -1 and 1
-        
-        # Sets every bias of the level to a random value between -1 and 1
-        for i in range(0, len(level.biases)):
-            level.biases[i] = random.random() * 2 -1 # Set bias to a random value between -1 and 1
-        """
-
     # Calculates the output of one level, using the given inputs
     # Note that the level can only return 0 or 1 for each output
     # givenInputs is an array of numbers
@@ -98,26 +91,6 @@ class Level:
         
         level.inputs = givenInputs
 
-        level.outputs = np.dot(level.weights, level.inputs) + level.biases
+        level.outputs = utils.sigmoid(np.dot(level.weights, level.inputs) + level.biases)
 
-        return utils.sigmoid(level.outputs)
-        """
-        # Calculates output value for each output node
-        for i in range(0, len(level.outputs)):
-            sum = 0 #Sum of all input values times their weights
-
-            level.inputs
-
-            # Calculates sum
-            for j in range(0, len(level.inputs)):
-                #For every input -> multiply it with the weight of the input and the current output node
-                sum += level.inputs[j] * level.weights[j][i]
-
-            # If the sum is bigger than the bias of an output node it is active (1)
-            if sum > level.biases[i]:
-                level.outputs[i] = 1
-            else: 
-                level.outputs[i] = 0
-
-        # Return the calculated outputs array
-        """
+        return level.outputs
