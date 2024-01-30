@@ -2,6 +2,7 @@
 import random
 import utils
 
+import numpy as np
 #---Class for the neural network---
 class NeuralNetwork:
     
@@ -63,17 +64,8 @@ class NeuralNetwork:
 class Level:
 
     def __init__(self, inputCount, outputCount):
-        self.inputs = [0] * inputCount #Array of inputs with the length of inputCount
-        self.outputs = [0] * outputCount #Array of outputs with the length of outputCount
-
-        self.biases = [0] * outputCount #Array of biasese with the lenght of outputCount
-        # Weights will be a 2D array containing a value between -1 and 1 for every possible connection -
-        # between inputs and outputs
-        # To find a weight between input a and output b use: weights[a][b]
-        self.weights = [None] * inputCount
-
-        for i in range(0, inputCount): #Adds the second dimension
-            self.weights[i] = [0] * outputCount #Creates a new Array with the lenght of ouput count
+        self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
+        self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount
 
         Level.randomize(self) #Randomizes the level on initialization
     
@@ -81,6 +73,11 @@ class Level:
     @staticmethod
     def randomize(level):
 
+        level.weights = np.random.randn(len(level.outputs), len(level.inputs)) * 0.1
+
+        level.biases = np.zeros((len(level.outputs), 1))
+
+        """
         # Sets every weight of the level to a random value between -1 and 1
         for i in range(0, len(level.inputs)):
             for j in range(0, len(level.outputs)):
@@ -89,20 +86,27 @@ class Level:
         # Sets every bias of the level to a random value between -1 and 1
         for i in range(0, len(level.biases)):
             level.biases[i] = random.random() * 2 -1 # Set bias to a random value between -1 and 1
-    
+        """
+
     # Calculates the output of one level, using the given inputs
     # Note that the level can only return 0 or 1 for each output
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(givenInputs, level):
+    def feedForward(givenInputs, level): # as numpy array
 
         # Sets the given inputs to the level inputs
-        for i in range(0, len(givenInputs)):
-            level.inputs[i] = givenInputs[i]
+        
+        level.inputs = givenInputs
 
+        level.outputs = np.dot(level.weights, level.inputs) + level.biases
+
+        return utils.sigmoid(level.outputs)
+        """
         # Calculates output value for each output node
         for i in range(0, len(level.outputs)):
             sum = 0 #Sum of all input values times their weights
+
+            level.inputs
 
             # Calculates sum
             for j in range(0, len(level.inputs)):
@@ -116,5 +120,4 @@ class Level:
                 level.outputs[i] = 0
 
         # Return the calculated outputs array
-        return level.outputs
-    
+        """

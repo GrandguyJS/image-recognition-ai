@@ -1,10 +1,11 @@
 # Convert the test and train images to a list
 import os
+import numpy as np
 
 # Loading the train and test directory
 root_dir = "/Users/grandguymc/Downloads/Cat:Dog/"
-train_prefix = f"train/"
-test_prefix = f"test/"
+train_prefix = "train/"
+test_prefix = "test/"
 
 from PIL import Image  
 
@@ -15,9 +16,7 @@ def resize_image(path):
 
     new_image = image.resize((200, 200)) # Resize it to (200, 200)
 
-    image_list = list(new_image.getdata()) # Turn it into a list
-
-    return image_list
+    return np.array(new_image).reshape(-1, 1)
 
 import random
 
@@ -42,6 +41,4 @@ def get_image_batch(size, train=True):
         return image_batch, image_results # Return the image lists and results
     
     return image_batch # Only return the image list as we don't train
-
-
 
