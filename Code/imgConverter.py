@@ -35,13 +35,15 @@ def get_image_batch(size, train=True):
         image_batch[i] = resize_image(root_dir + prefix + image_name) # Get the image_list of the file and put it in the list image_batch
             
     if train: # If we want to train, we also have to give the right result, so cat or dog
-        image_results = [None] * size
+
+        image_results = [None] * size #Array of 0 and 1 (0 = cat, 1 = dog)
+        
         for i,image_name in enumerate(image_name_batch): # Iterate trough all image_names
             
             if image_name[:3] == "cat":
-                image_results[i] = np.array([0,1]).reshape((-1 ,1)) # Cat
+                image_results[i] = 0 # Cat
             else:
-                image_results[i] = np.array([1,0]).reshape((-1 ,1)) # Dog
+                image_results[i] = 1 # Dog
 
         return image_batch, image_results # Return the image lists and results
     

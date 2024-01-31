@@ -10,19 +10,6 @@ def sigmoid(x):
     return 1 / (1+np.exp(-x))
 
 
-
-def get_loss(predictions, targets):
-    losses = []
-    for i in range(0, len(predictions)):
-        prediction = np.round(predictions[i])
-        
-        if np.array_equal(prediction, targets[i]):
-            losses.append(1)
-        else:
-            losses.append(0)
-
-    loss = sum(losses) / len(losses)
-    return loss
-
-    
-    
+# Returns the value the networks prediction and the target are apart
+def get_loss(prediction, target):
+    return np.abs(target-prediction)

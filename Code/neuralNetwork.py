@@ -60,16 +60,20 @@ class NeuralNetwork:
                         amount # Amount it should change in that direction
                     )
 
+    #Returns the loss of the network
     @staticmethod
     def get_accuracy(output, true_output):
         loss = utils.get_loss(output, true_output)
         return loss
+    
 #---Class for one layer of the neural network---
 class Level:
 
     def __init__(self, inputCount, outputCount):
         self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
         self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount
+        self.weights = np.zeros((outputCount, inputCount)) #2D Array of the weights
+        self.biases = np.zeros((outputCount)) #2D Array of the biases
 
         Level.randomize(self) #Randomizes the level on initialization
     
@@ -77,9 +81,11 @@ class Level:
     @staticmethod
     def randomize(level):
 
-        level.weights = np.random.randn(len(level.outputs), len(level.inputs)) * 0.1
+        # Sets every weight of the level to a random value between -1 and 1
+        level.weights = np.random.randn(len(level.outputs), len(level.inputs))
 
-        level.biases = np.zeros((len(level.outputs), 1))
+        # Sets every bias of the level to a random value between -1 and 1
+        level.biases = np.random.randn(len(level.outputs)) #Needed to be 1D instead of 2D
 
     # Calculates the output of one level, using the given inputs
     # Note that the level can only return 0 or 1 for each output
@@ -91,6 +97,20 @@ class Level:
         
         level.inputs = givenInputs
 
+        # Calculates the output with a sum product multiplication
+        #Sigmoid ensures every value is between 0 and 1
         level.outputs = utils.sigmoid(np.dot(level.weights, level.inputs) + level.biases)
 
+        #Return outputs
         return level.outputs
+    
+
+n = NeuralNetwork([3, 5, 1])
+o = NeuralNetwork.feedForward([0, 0.4, 0], n)
+print(o)
+
+NeuralNetwork.mutate(n, 0.1)
+o = NeuralNetwork.feedForward([0, 0.4, 0], n)
+l = NeuralNetwork.get_accuracy(o, 1)
+print(o)
+print(l)
