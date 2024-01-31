@@ -1,10 +1,11 @@
 # Convert the test and train images to a list
 import os
+import numpy as np
 
 # Loading the train and test directory
 root_dir = "/Users/grandguymc/Downloads/Cat:Dog/"
-train_prefix = f"train/"
-test_prefix = f"test/"
+train_prefix = "train/"
+test_prefix = "test/"
 
 from PIL import Image  
 
@@ -15,9 +16,7 @@ def resize_image(path):
 
     new_image = image.resize((200, 200)) # Resize it to (200, 200)
 
-    image_list = list(new_image.getdata()) # Turn it into a list
-
-    return image_list
+    return np.array(new_image).reshape(-1, 1)
 
 import random
 
@@ -36,12 +35,17 @@ def get_image_batch(size, train=True):
         image_batch[i] = resize_image(root_dir + prefix + image_name) # Get the image_list of the file and put it in the list image_batch
             
     if train: # If we want to train, we also have to give the right result, so cat or dog
-        image_results = [None] * size
+
+        image_results = [None] * size #Array of 0 and 1 (0 = cat, 1 = dog)
+        
         for i,image_name in enumerate(image_name_batch): # Iterate trough all image_names
-            image_results[i] = image_name[:3] # Set the image_result to the first three letters of the image file (dog/cat)
+            
+            if image_name[:3] == "cat":
+                image_results[i] = 0 # Cat
+            else:
+                image_results[i] = 1 # Dog
+
         return image_batch, image_results # Return the image lists and results
     
     return image_batch # Only return the image list as we don't train
-
-
 

@@ -2,6 +2,7 @@
 import random
 import utils
 
+import numpy as np
 #---Class for the neural network---
 class NeuralNetwork:
     
@@ -20,8 +21,9 @@ class NeuralNetwork:
     # Will return an array of 0 and 1
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(givenInputs, network):
+    def feedForward(givenInputs, network): # Input correct result
         # Calculates the first level
+        
         outputs = Level.feedForward(givenInputs, network.levels[0])
 
         # Loops through all following levels and updates outputs
@@ -58,22 +60,21 @@ class NeuralNetwork:
                         amount # Amount it should change in that direction
                     )
 
-
+    #Returns the accuracy of the network
+    # 1 = 100% accurate
+    @staticmethod
+    def get_accuracy(output, true_output):
+        loss = 1-utils.get_loss(output, true_output) # Subtracts the loss from 1
+        return loss
+    
 #---Class for one layer of the neural network---
 class Level:
 
     def __init__(self, inputCount, outputCount):
-        self.inputs = [0] * inputCount #Array of inputs with the length of inputCount
-        self.outputs = [0] * outputCount #Array of outputs with the length of outputCount
-
-        self.biases = [0] * outputCount #Array of biasese with the lenght of outputCount
-        # Weights will be a 2D array containing a value between -1 and 1 for every possible connection -
-        # between inputs and outputs
-        # To find a weight between input a and output b use: weights[a][b]
-        self.weights = [None] * inputCount
-
-        for i in range(0, inputCount): #Adds the second dimension
-            self.weights[i] = [0] * outputCount #Creates a new Array with the lenght of ouput count
+        self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
+        self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount
+        self.weights = np.zeros((outputCount, inputCount)) #2D Array of the weights
+        self.biases = np.zeros((outputCount)) #2D Array of the biases
 
         Level.randomize(self) #Randomizes the level on initialization
     
@@ -82,39 +83,24 @@ class Level:
     def randomize(level):
 
         # Sets every weight of the level to a random value between -1 and 1
-        for i in range(0, len(level.inputs)):
-            for j in range(0, len(level.outputs)):
-                level.weights[i][j] = random.random() * 2 -1 #Set weight to a random value between -1 and 1
-        
+        level.weights = np.random.randn(len(level.outputs), len(level.inputs))
+
         # Sets every bias of the level to a random value between -1 and 1
-        for i in range(0, len(level.biases)):
-            level.biases[i] = random.random() * 2 -1 # Set bias to a random value between -1 and 1
-    
+        level.biases = np.random.randn(len(level.outputs)) #Needed to be 1D instead of 2D
+
     # Calculates the output of one level, using the given inputs
     # Note that the level can only return 0 or 1 for each output
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(givenInputs, level):
+    def feedForward(givenInputs, level): # as numpy array
 
         # Sets the given inputs to the level inputs
-        for i in range(0, len(givenInputs)):
-            level.inputs[i] = givenInputs[i]
+        
+        level.inputs = givenInputs
 
-        # Calculates output value for each output node
-        for i in range(0, len(level.outputs)):
-            sum = 0 #Sum of all input values times their weights
+        # Calculates the output with a sum product multiplication
+        #Sigmoid ensures every value is between 0 and 1
+        level.outputs = utils.sigmoid(np.dot(level.weights, level.inputs) + level.biases)
 
-            # Calculates sum
-            for j in range(0, len(level.inputs)):
-                #For every input -> multiply it with the weight of the input and the current output node
-                sum += level.inputs[j] * level.weights[j][i]
-
-            # If the sum is bigger than the bias of an output node it is active (1)
-            if sum > level.biases[i]:
-                level.outputs[i] = 1
-            else: 
-                level.outputs[i] = 0
-
-        # Return the calculated outputs array
+        #Return outputs
         return level.outputs
-    
