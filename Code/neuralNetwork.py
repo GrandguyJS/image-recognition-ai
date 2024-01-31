@@ -60,10 +60,11 @@ class NeuralNetwork:
                         amount # Amount it should change in that direction
                     )
 
-    #Returns the loss of the network
+    #Returns the accuracy of the network
+    # 1 = 100% accurate
     @staticmethod
     def get_accuracy(output, true_output):
-        loss = utils.get_loss(output, true_output)
+        loss = 1-utils.get_loss(output, true_output) # Subtracts the loss from 1
         return loss
     
 #---Class for one layer of the neural network---
@@ -103,14 +104,3 @@ class Level:
 
         #Return outputs
         return level.outputs
-    
-
-n = NeuralNetwork([3, 5, 1])
-o = NeuralNetwork.feedForward([0, 0.4, 0], n)
-print(o)
-
-NeuralNetwork.mutate(n, 0.1)
-o = NeuralNetwork.feedForward([0, 0.4, 0], n)
-l = NeuralNetwork.get_accuracy(o, 1)
-print(o)
-print(l)
