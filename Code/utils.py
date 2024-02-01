@@ -8,8 +8,3 @@ def lerp(A, B, t):
 
 def sigmoid(x):
     return 1 / (1+np.exp(-x))
-
-
-# Returns the value the networks prediction and the target are apart
-def get_loss(prediction, target):
-    return np.abs(target-prediction)

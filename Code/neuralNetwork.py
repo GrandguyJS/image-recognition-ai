@@ -21,7 +21,7 @@ class NeuralNetwork:
     # Will return an array of 0 and 1
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(givenInputs, network): # Input correct result
+    def feedForward(network, givenInputs): # Input correct result
         # Calculates the first level
         
         outputs = Level.feedForward(givenInputs, network.levels[0])
@@ -44,28 +44,34 @@ class NeuralNetwork:
         for level in network.levels:
 
             # Mutates the biases by amount
-            for i in range(0, len(level.biases)):
-                level.biases[i] = utils.lerp(
-                    level.biases[i], # Current value
-                    random.random() * 2 - 1, # Random number between -1 and 1
-                    amount # Amount it should change in that direction
-                )
+            random_values_biases = np.random.uniform(-1, 1, level.biases.shape) # Random biases values
+            level.biases = utils.lerp(level.biases, random_values_biases, amount) # Change the biases with the random biases by specific amount
 
             # Mutates the weights by amount
-            for i in range(0, len(level.weights)):
-                for j in range(0, len(level.weights[i])):
-                    level.weights[i][j] = utils.lerp(
-                        level.weights[i][j], # Current value
-                        random.random() * 2 - 1, # Random number between -1 and 1
-                        amount # Amount it should change in that direction
-                    )
+            random_values_weights = np.random.uniform(-1, 1, level.weights.shape) # Random weight values
+            level.weights = level.weights + (random_values_weights - level.weights) * amount # Change the weights with the random weights by specific amount
 
     #Returns the accuracy of the network
     # 1 = 100% accurate
     @staticmethod
-    def get_accuracy(output, true_output):
-        loss = 1-utils.get_loss(output, true_output) # Subtracts the loss from 1
-        return loss
+    def get_error(prediction, target):
+        # get the average of the loss because the neural network has two outputs
+
+        return np.mean(np.square(target - prediction)) # MSE loss function 
+
+    # Feedforward and mutate the neuralnetwork
+    # Output the new accuracy
+
+    @staticmethod
+    def train(network, X, y):
+        # Input the network, the input and desired output
+        prediction = NeuralNetwork.feedForward(network, X)
+        loss = NeuralNetwork.get_error(prediction, y)
+
+        print("Loss: " + str(loss))
+        # Mutate the neural network by the loss
+        NeuralNetwork.mutate(network, loss)
+
     
 #---Class for one layer of the neural network---
 class Level:
@@ -73,34 +79,21 @@ class Level:
     def __init__(self, inputCount, outputCount):
         self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
         self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount
-        self.weights = np.zeros((outputCount, inputCount)) #2D Array of the weights
-        self.biases = np.zeros((outputCount)) #2D Array of the biases
+        self.weights = np.random.randn(inputCount, outputCount) * 0.1 #2D Array of the weights and randomize it here
+        self.biases = np.random.randn(outputCount) * 0.1 #2D Array of the biases
 
-        Level.randomize(self) #Randomizes the level on initialization
-    
-    #Randomize the values of the level
-    @staticmethod
-    def randomize(level):
-
-        # Sets every weight of the level to a random value between -1 and 1
-        level.weights = np.random.randn(len(level.outputs), len(level.inputs))
-
-        # Sets every bias of the level to a random value between -1 and 1
-        level.biases = np.random.randn(len(level.outputs)) #Needed to be 1D instead of 2D
 
     # Calculates the output of one level, using the given inputs
     # Note that the level can only return 0 or 1 for each output
     # givenInputs is an array of numbers
     @staticmethod
     def feedForward(givenInputs, level): # as numpy array
-
         # Sets the given inputs to the level inputs
-        
         level.inputs = givenInputs
 
         # Calculates the output with a sum product multiplication
         #Sigmoid ensures every value is between 0 and 1
-        level.outputs = utils.sigmoid(np.dot(level.weights, level.inputs) + level.biases)
+        level.outputs = utils.sigmoid(np.dot(level.inputs, level.weights) + level.biases)
 
         #Return outputs
         return level.outputs
