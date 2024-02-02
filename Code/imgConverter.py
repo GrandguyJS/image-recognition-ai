@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 # Loading the train and test directory
-root_dir = "/Users/grandguymc/Downloads/Cat:Dog/"
+root_dir = "/Users/timo/Downloads/CatsAndDogs"
 train_prefix = "train/"
 test_prefix = "test/"
 
@@ -47,9 +47,9 @@ def get_image_batch(size, train=True):
         for i,image_name in enumerate(image_name_batch): # Iterate trough all image_names
             
             if image_name[:3] == "cat":
-                image_results[i] = [0, 1] # Cat
+                image_results[i] = 0 # Cat
             else:
-                image_results[i] = [1, 0] # Dog
+                image_results[i] = 1 # Dog
         
         return np.array(image_batch), np.array(image_results) # Return the image lists and results
     

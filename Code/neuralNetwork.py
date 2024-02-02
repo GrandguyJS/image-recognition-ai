@@ -1,6 +1,7 @@
 # Neural Network Code
 import random
 import utils
+import json
 
 import numpy as np
 #---Class for the neural network---
@@ -10,6 +11,8 @@ class NeuralNetwork:
     # Eg.: [50, 70, 100, 2] has 50 inputs, 2 hidden layers with 70 an 100 neurons and 2 outputs
     def __init__(self, neuronCounts):
         self.levels = [] # Stores the levels
+
+        self.accuracy = 0 # Stores the accuracy of this network
 
         # Creates the levels in the levels array
         for i in range(0, len(neuronCounts) - 1):
@@ -54,24 +57,11 @@ class NeuralNetwork:
     #Returns the accuracy of the network
     # 1 = 100% accurate
     @staticmethod
-    def get_error(prediction, target):
-        # get the average of the loss because the neural network has two outputs
-
-        return np.mean(np.square(target - prediction)) # MSE loss function 
-
-    # Feedforward and mutate the neuralnetwork
-    # Output the new accuracy
-
-    @staticmethod
-    def train(network, X, y):
-        # Input the network, the input and desired output
-        prediction = NeuralNetwork.feedForward(network, X)
-        loss = NeuralNetwork.get_error(prediction, y)
-
-        print("Loss: " + str(loss))
-        # Mutate the neural network by the loss
-        NeuralNetwork.mutate(network, loss)
-
+    def get_accuracy(output, true_output):
+         acc = 1-utils.get_loss(output, true_output) # Subtracts the loss from 1
+         return acc
+    
+        
     
 #---Class for one layer of the neural network---
 class Level:
@@ -79,8 +69,8 @@ class Level:
     def __init__(self, inputCount, outputCount):
         self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
         self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount
-        self.weights = np.random.randn(inputCount, outputCount) * 0.1 #2D Array of the weights and randomize it here
-        self.biases = np.random.randn(outputCount) * 0.1 #2D Array of the biases
+        self.weights = np.random.randn(outputCount, inputCount) #2D Array of the weights and randomize it here
+        self.biases = np.random.randn(outputCount) #2D Array of the biases
 
 
     # Calculates the output of one level, using the given inputs
@@ -93,7 +83,7 @@ class Level:
 
         # Calculates the output with a sum product multiplication
         #Sigmoid ensures every value is between 0 and 1
-        level.outputs = utils.sigmoid(np.dot(level.inputs, level.weights) + level.biases)
+        level.outputs = utils.sigmoid(np.dot(level.weights, level.inputs) + level.biases)
 
         #Return outputs
         return level.outputs
