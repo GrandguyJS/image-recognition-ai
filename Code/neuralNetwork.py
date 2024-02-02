@@ -4,6 +4,7 @@ import utils
 import json
 
 import numpy as np
+
 #---Class for the neural network---
 class NeuralNetwork:
     
@@ -107,9 +108,6 @@ class NeuralNetwork:
         # Run the neuralnetwork, calculate the loss and do backpropagation to the neural network and return the loss
         prediction = NeuralNetwork.feedForward(network, X)
         loss = NeuralNetwork.get_accuracy(prediction, y)
-        # Print the loss
-        print("Loss: " + str(loss))
-
         NeuralNetwork.backward(network, X, y, prediction, learning_rate)
         return loss
         

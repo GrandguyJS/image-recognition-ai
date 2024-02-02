@@ -23,11 +23,19 @@ else:
 
 # Set loss to 1 and run the neuralnetwork as long as oss is bigger than x, in this case 0.003
 loss = 1
+generation = 1
+ngenerations = 20
+
 while loss > 0.003:
     # Get new random images and labels
     images, labels = get_image_batch(batch_size)
     # Get the loss
     loss = NeuralNetwork.train(nn, images, labels, 0.1)
+    # Keep track of the generation for printing
+    if generation % ngenerations == 0:
+        print("Epoch: " + str(int(generation / ngenerations)) + ", Loss: " + str(loss))
+    generation += 1
+    
 
 # After all, save the neural network
 utils.save_object(nn, "network.pkl")
