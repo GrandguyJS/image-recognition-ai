@@ -3,18 +3,18 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-# Loading the train and test directory
-root_dir = "/Users/grandguymc/Downloads/cat:dog/"
-train_prefix = "train/"
-test_prefix = "test/"
-
-output_dir = "../Dataset/"
+# Input values
+root_dir = "/Users/grandguymc/Downloads/cat:dog/" # Where is the dataset with the images
+train_prefix = "train/" # The folder inside the dataset with the train_pictures
+test_prefix = "test/" # The folder inside thr dataset with the test_values
+output_dir = "../Dataset/" # Where will the converted photo_arrays get saved
 
 from PIL import Image  
 
 #Take your own images
 import cv2
 
+# Take a file and return an np.array with 40 000 values that represent the photo in black-white format with 1.0 being white, 0.0 being black
 def resize_image(path):
     # Open the path
     image = Image.open(path) # Open the image
@@ -28,6 +28,8 @@ def resize_image(path):
 
 import random
 
+# Save all images in the dataset to an npy file
+# Only has to get run once
 def get_all_images(path, train = True):
     # This function goes into the dataset, iterates trough every file, turns into 200x200 grayscale and appends it into a list
     # Initialize empty photos and labels
@@ -63,6 +65,7 @@ def get_all_images(path, train = True):
     # Return true
     return True
 
+# To reduce training_time, load all images into a var (RAM instead of storage)
 def load_all_images():
     # Instead of having to load the files each time we get a new batch, we can also load the entire file into a var so basically into the RAM
     # Note this requires a bit of RAM
@@ -78,6 +81,7 @@ def load_all_images():
     print("Loaded all images successfully!")
     return True
 
+# Get n random images from the images var and their corresponding labels
 def get_image_batch(size, train=True):
     # This function returns n photos and their corresponding labels
     if not train:
@@ -89,6 +93,7 @@ def get_image_batch(size, train=True):
     # Return all images and labels with these indices
     return images[idx], labels[idx]
 
+# Take a picture with the camera and convert it into the desired np.array
 def take_picture():
     # This function takes a picture, resizes it and returns the img as an np.array
 
