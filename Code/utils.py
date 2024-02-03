@@ -37,3 +37,6 @@ def loadFormerNetwork(filename):
             return pickle.load(inp) # Load the former best network object
     else: 
         return None
+
+def getnum(array):
+    return np.argmax(array == 1)

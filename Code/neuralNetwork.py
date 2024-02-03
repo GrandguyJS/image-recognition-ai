@@ -110,8 +110,8 @@ class NeuralNetwork:
         # We round the prediction, so it is either 1 or 0, and we look how many were correct
         # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
         # Also print how many were wrong of how many inputs ina  siutable format
-        print(str(int(sum(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
-        accuracy = (len(prediction)-int(sum(np.round(prediction)-y))) / len(prediction)
+        print(str(abs(int(np.sum(np.round(prediction)-y)))) + f" wrong out of {str(len(prediction))}")
+        accuracy = abs(len(prediction)-int(np.sum(np.round(prediction)-y))) / len(prediction)
         return accuracy
     
     @staticmethod
@@ -130,7 +130,6 @@ class NeuralNetwork:
         # This function will test the accuracy of the neural network without changing any weights/biases
         # Run the inputs to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
-
         # Get the accuracy with the function above
         accuracy = NeuralNetwork.get_accuracy(prediction, y)
         # Return the accuracy

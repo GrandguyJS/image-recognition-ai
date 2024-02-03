@@ -2,3 +2,7 @@
 labels.npy
 photos.npy
 captured_image.jpg
+mnist_train.csv
+mnist_test.csv
+train_labels.npy
+train_pixels.npy
