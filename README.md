@@ -1,3 +1,14 @@
+# How to run
+1. Go into `imgConverter.py` and change the `root_dir` to the directory of your dataset.
+2. Change `train_prefix`and `test_prefix` to the folder inside of the folder with the dataset. If everything already is in the dataset leave the vars blank
+3. Set the `output_dir` where the converted images will get saved
+4. Next go to `main.py` and specify the layers, the batch size, and the path where the neural network will get saved.
+5. Specify if you want to train or test your neural network. If you want to take you own photos set `diy` to True.
+6. Run `python main.py`
+7. It will train the neural network and in the end if you want to test it, it will go trough the first n pictures in the converted dataset, get the output round it and see how many were correct.
+8. Enjoy!
+
+
 # 1. File Initializing
 -   ### 1.1 Install dependencies
 -   ### 1.2 Download all train and test images from Kaggle
