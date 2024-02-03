@@ -1,3 +1,2 @@
 .DS_Store
-**/photos.npy
-**/labels.npy
+Dataset/
