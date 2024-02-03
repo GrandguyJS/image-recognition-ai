@@ -8,7 +8,7 @@
 7. It will train the neural network and in the end if you want to test it, it will go trough the first n pictures in the converted dataset, get the output round it and see how many were correct.
 8. Enjoy!
 
-
+# Neural Network structure
 # 1. File Initializing
 -   ### 1.1 Install dependencies
 -   ### 1.2 Download all train and test images from Kaggle
