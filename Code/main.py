@@ -7,22 +7,20 @@ import numpy as np
 import pickle
 import os
 
-# Set Neural Network layers
-layers = [40000, 128, 1]
-# How many photos to input at once into the neural network
-batch_size = 32
-# Set the neuralnetwork path
-network_path = "../Network/network.pkl"
-
-# Set to False if you want to test, elso to True
-train = True
+# Input Values
+layers = [40000, 128, 1] # Set the neuralnetwork structure
+batch_size = 32 # Set the amounts of photos the network will train with each iteration
+network_path = "../Network/network.pkl" # Specify where the network will get saved after done training
+train = True # Specify what you want to do. Train, Test or take your own picture
 test = False
-# Take your own picture and let it run trough the neural network
 diy = False
 
+
+# Code
 # Load the neuralnetwork from the filename
 nn = utils.loadFormerNetwork(network_path)
 
+# Check if we want to train
 if train:
     if nn is not None:
         # If the neralnetwork exists do nothing

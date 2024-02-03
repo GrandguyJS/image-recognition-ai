@@ -111,7 +111,8 @@ class NeuralNetwork:
         # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
         # Also print how many were wrong of how many inputs ina  siutable format
         print(str(int(sum(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
-        return (len(prediction)-int(sum(np.round(prediction)-y))) / len(prediction)
+        accuracy = (len(prediction)-int(sum(np.round(prediction)-y))) / len(prediction)
+        return accuracy
     
     @staticmethod
     def train(network, X, y, learning_rate = 0.1):
