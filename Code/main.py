@@ -10,12 +10,12 @@ import os
 # Set Neural Network layers
 layers = [40000, 128, 1]
 # How many photos to input at once into the neural network
-batch_size = 100
+batch_size = 32
 # Set the neuralnetwork path
 network_path = "../Network/network.pkl"
 
 # Set to False if you want to test, elso to True
-train = False
+train = True
 test = False
 # Take your own picture and let it run trough the neural network
 diy = False
@@ -43,7 +43,7 @@ if train:
             # Keep track of generation
             generation += 1
             # Get new random images and labels
-            images, labels = get_image_batch(batch_size)
+            images, labels = get_image_batch(batch_size, True)
             # Get the loss
             loss = NeuralNetwork.train(nn, images, labels, 0.1)
             # Print new best

@@ -56,6 +56,7 @@ def load_all_images():
     if not os.path.isfile("../Dataset/photos.npy"):
         print("Creating npy files")
         get_all_images(root_dir, True)
+    print("loading npy files")
     global images
     global labels
     images, labels = np.load(output_dir + "photos.npy")[:100], np.load(output_dir+"labels.npy")[:100]
@@ -64,8 +65,8 @@ def load_all_images():
 
 def get_image_batch(size, train=True):
     if not train:
-        images, labels = np.load(output_dir + "photos.npy")[:size], np.load(output_dir+"labels.npy")[:size]
-        return images, labels
+        testimages, testlabels = np.load(output_dir + "photos.npy")[:size], np.load(output_dir+"labels.npy")[:size]
+        return testimages, testlabels
     idx = np.random.choice(np.arange(len(images)), size, replace=False)
     return images[idx], labels[idx]
 
