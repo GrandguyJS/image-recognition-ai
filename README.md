@@ -9,6 +9,10 @@
 8. It will train the neural network and in the end if you want to test it, it will go trough the first n pictures in the converted dataset, get the output round it and see how many were correct.
 9. Enjoy!
 
+> Contributions
+
+This was a school project me and [TimoI44](https://github.com/TimoI44) did. This wouldn't be possible without him.
+
 # Neural Network structure
 # 1. File Initializing
 -   ### 1.1 Install dependencies
@@ -40,7 +44,3 @@
 -   ### 4.2 Initialize trained weights and biases
 -   ### 4.3 Run trough the Data Set
 -   ### 4.4 Calculate accuracy
-#
-> Contributions
-
-This was a school project me and [TimoI44](https://github.com/TimoI44) did. This wouldn't be possible without him.
