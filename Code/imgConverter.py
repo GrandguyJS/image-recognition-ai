@@ -1,57 +1,68 @@
 # Convert the test and train images to a list
 import os
 import numpy as np
+from tqdm import tqdm
 
 # Loading the train and test directory
-root_dir = "/Users/grandguymc/Downloads/Cat:Dog/"
+root_dir = "/Users/grandguymc/Downloads/cat:dog/"
 train_prefix = "train/"
 test_prefix = "test/"
+
+output_dir = "../Dataset/"
 
 from PIL import Image  
 
 def resize_image(path):
     image = Image.open(path) # Open the image
 
-    image = image.convert("L") # Convert it to black and white
+    img = image.convert("L").resize((200, 200))
 
-    new_image = image.resize((200, 200)) # Resize it to (200, 200)
-
-    image_data = new_image.getdata()
-
-    image_data_scaled = image_data/np.amax(image_data, axis=0)
-
-    return image_data_scaled # The largest value will be 1, while all the others get scaled down
+    image_array = np.array(img).flatten() / 255.0
+    
+    return image_array # The largest value will be 1, while all the others get scaled down
 
 import random
 
+def get_all_images(path, train = True):
+    # Initialize empty photos and labels
+    photos, labels = list(), list()
+    # Load al the pics in the train dataset
+    files = os.listdir(path + train_prefix)
+    # Add progress bar
+    for i in tqdm(range(0, len(files)), desc="Iterating trough image files"):
+        if files[i].startswith("."):
+            continue
+        # if it is a cat we want to have the label set to 1
+        output = [1]
+        if files[i].startswith("dog"):
+            # If it is a dog we set it to 0
+            output = [0]
+        photo = resize_image(os.path.join(path, train_prefix, files[i]))
+
+        photos.append(photo)
+        labels.append(output)
+
+    photos = np.asarray(photos)
+    labels = np.asarray(labels)
+
+    np.save(output_dir + "photos.npy", photos)
+    np.save(output_dir + "labels.npy", labels)
+    return True
+
+def load_all_images():
+    if not os.path.isfile("../Dataset/photos.npy"):
+        print("Creating npy files")
+        get_all_images(root_dir, True)
+    global images
+    global labels
+    images, labels = np.load(output_dir + "photos.npy")[:100], np.load(output_dir+"labels.npy")[:100]
+    print("Loaded all images successfully!")
+    return True
+
 def get_image_batch(size, train=True):
-    prefix = test_prefix
-    if train:
-        prefix = train_prefix
-        
-    directory_list = os.listdir(root_dir + prefix) # If we want to train, get the list of all files in train
-    
-    filtered_directory_list = [item for item in directory_list if not item.startswith('.')]
-
-    image_name_batch = random.sample(filtered_directory_list, size)
-
-    image_batch = [None] * size
-    
-    for i,image_name in enumerate(image_name_batch): # Iterate trough all random image names
-        image_batch[i] = resize_image(root_dir + prefix + image_name)
-            
-    if train: # If we want to train, we also have to give the right result, so cat or dog
-
-        image_results = [None] * size #Array of 0 and 1 (0 = cat, 1 = dog)
-        
-        for i,image_name in enumerate(image_name_batch): # Iterate trough all image_names
-            
-            if image_name[:3] == "cat":
-                image_results[i] = [0, 1] # Cat
-            else:
-                image_results[i] = [1, 0] # Dog
-        
-        return np.array(image_batch), np.array(image_results) # Return the image lists and results
-    
-    return np.array(image_batch) # Only return the image list as we don't train
+    if not train:
+        images, labels = np.load(output_dir + "photos.npy")[:size], np.load(output_dir+"labels.npy")[:size]
+        return images, labels
+    idx = np.random.choice(np.arange(len(images)), size, replace=False)
+    return images[idx], labels[idx]
 
