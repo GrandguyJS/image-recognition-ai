@@ -1,12 +1,13 @@
-# How to run
-1. Go into `imgConverter.py` and change the `root_dir` to the directory of your dataset.
-2. Change `train_prefix`and `test_prefix` to the folder inside of the folder with the dataset. If everything already is in the dataset leave the vars blank
-3. Set the `output_dir` where the converted images will get saved
-4. Next go to `main.py` and specify the layers, the batch size, and the path where the neural network will get saved.
-5. Specify if you want to train or test your neural network. If you want to take you own photos set `diy` to True.
-6. Run `python main.py`
-7. It will train the neural network and in the end if you want to test it, it will go trough the first n pictures in the converted dataset, get the output round it and see how many were correct.
-8. Enjoy!
+> For the reader
+1. Use `pip install -r requirements.txt` to download all needed libraries
+2. Go into `imgConverter.py` and change the `root_dir` to the directory of your dataset.
+3. Change `train_prefix`and `test_prefix` to the folder inside of the folder with the dataset. If everything already is in the dataset leave the vars blank
+4. Set the `output_dir` where the converted images will get saved
+5. Next go to `main.py` and specify the layers, the batch size, and the path where the neural network will get saved.
+6. Specify if you want to train or test your neural network. If you want to take you own photos set `diy` to True.
+7. Run `python main.py`
+8. It will train the neural network and in the end if you want to test it, it will go trough the first n pictures in the converted dataset, get the output round it and see how many were correct.
+9. Enjoy!
 
 # Neural Network structure
 # 1. File Initializing
@@ -40,16 +41,6 @@
 -   ### 4.3 Run trough the Data Set
 -   ### 4.4 Calculate accuracy
 #
-> For the reader
-
-1. Use `pip install -r requirements.txt` to download all needed libraries
-
-2. Create your image folder that will contain the image you would like to test
-
-3. Specify the folder path in `main.py`
-
-4. Run `python main.py`
-
 > Contributions
 
 This was a school project me and [TimoI44](https://github.com/TimoI44) did. This wouldn't be possible without him.
