@@ -99,18 +99,31 @@ class NeuralNetwork:
     #Returns the accuracy of the network
     # 1 = 100% accurate
     @staticmethod
-    def get_accuracy(prediction, y):
+    def get_loss(prediction, y):
         # The vaerage, of the absolute difference of all outputs
         return np.mean(abs(y - prediction))
+
+    # In testing period, get how many images where classified correctly
+    @staticmethod
+    def get_accuracy(prediction, y):
+        # Round the prediction, subtract the true solution, sum it, and print the errors of n predictions
+        print(str(int(sum(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
+        return (len(prediction)-int(sum(np.round(prediction)-y))) / len(prediction)
     
     @staticmethod
-    def train(network, X, y, learning_rate):
+    def train(network, X, y, learning_rate = 0.1):
         # Run the neuralnetwork, calculate the loss and do backpropagation to the neural network and return the loss
         prediction = NeuralNetwork.feedForward(network, X)
-        loss = NeuralNetwork.get_accuracy(prediction, y)
+        loss = NeuralNetwork.get_loss(prediction, y)
         NeuralNetwork.backward(network, X, y, prediction, learning_rate)
         return loss
+
+    def test(network, X, y):
+
+        prediction = NeuralNetwork.feedForward(network, X)
         
+        accuracy = NeuralNetwork.get_accuracy(prediction, y)
+        return accuracy
     
 #---Class for one layer of the neural network---
 class Level:
