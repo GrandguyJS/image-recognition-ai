@@ -26,8 +26,6 @@ def get_all_images(path, train = True):
     photos, labels = list(), list()
     # Load al the pics in the train dataset
     for i, file in enumerate(os.listdir(path + train_prefix)):
-        if i == 100:
-            break
         if file.startswith("."):
             print("ds_store")
             continue
@@ -46,7 +44,7 @@ def get_all_images(path, train = True):
     np.save(output_dir + "photos.npy", photos)
     np.save(output_dir + "labels.npy", labels)
 
-    
+
 
 def get_image_batch(size, train=True):
     if not os.path.isfile("photos.npy"):

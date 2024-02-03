@@ -104,7 +104,7 @@ class NeuralNetwork:
         return np.mean(abs(y - prediction))
     
     @staticmethod
-    def train(network, X, y, learning_rate):
+    def train(network, X, y, learning_rate = 0.1):
         # Run the neuralnetwork, calculate the loss and do backpropagation to the neural network and return the loss
         prediction = NeuralNetwork.feedForward(network, X)
         loss = NeuralNetwork.get_accuracy(prediction, y)
