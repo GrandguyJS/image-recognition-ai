@@ -1,7 +1,7 @@
 # Run, train and test the photos in the neural network
 
 from neuralNetwork import NeuralNetwork, Level
-from imgConverter import get_image_batch, resize_image, load_all_images
+from imgConverter import get_image_batch, resize_image, load_all_images, take_picture
 import utils
 import numpy as np
 import pickle
@@ -13,11 +13,16 @@ layers = [40000, 128, 1]
 batch_size = 100
 # Set the neuralnetwork path
 network_path = "../Network/network.pkl"
-# Load the neuralnetwork from the filename
-nn = utils.loadFormerNetwork(network_path)
+
 # Set to False if you want to test, elso to True
 train = False
-generation = 0
+test = False
+# Take your own picture and let it run trough the neural network
+diy = False
+
+# Load the neuralnetwork from the filename
+nn = utils.loadFormerNetwork(network_path)
+
 if train:
     if nn is not None:
         # If the neralnetwork exists do nothing
@@ -33,6 +38,7 @@ if train:
     # Load all images so you can save yourself a lot of time
     load_all_images()
     try:
+        generation = 0
         for i in range(0, 10000):
             # Keep track of generation
             generation += 1
@@ -45,13 +51,25 @@ if train:
 
             if loss < best:
                 best = loss
+    # We added try and finnaly so you can abort the code and it will still save
     finally:
+        # After all, save the neural network
         utils.save_object(nn, network_path)
         print("Saved NeuralNetwork under " + network_path)
-    # After all, save the neural network
     
-else:
+    
+if test:
     # Test code
     images, labels = get_image_batch(batch_size, False)
     accuracy = NeuralNetwork.test(nn, images, labels)
     print("Accuracy: " + str(accuracy))
+
+# Get your own photo
+import cv2
+import tkinter as tk
+from PIL import Image, ImageTk
+
+if diy:
+    img = take_picture()
+    pred = NeuralNetwork.feedForward(nn, img)
+    print(pred)

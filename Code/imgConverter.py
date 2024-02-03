@@ -12,6 +12,9 @@ output_dir = "../Dataset/"
 
 from PIL import Image  
 
+#Take your own images
+import cv2
+
 def resize_image(path):
     image = Image.open(path) # Open the image
 
@@ -65,4 +68,15 @@ def get_image_batch(size, train=True):
         return images, labels
     idx = np.random.choice(np.arange(len(images)), size, replace=False)
     return images[idx], labels[idx]
+
+def take_picture():
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Could not open webcam.")
+        exit()
+    ret, frame = cap.read()
+    cv2.imwrite(output_dir + 'captured_image.jpg', frame)
+    cap.release()
+    img = resize_image(output_dir + "captured_image.jpg")
+    return img
 
