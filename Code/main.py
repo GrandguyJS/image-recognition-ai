@@ -39,6 +39,7 @@ if train:
     load_all_images()
     try:
         generation = 0
+        # Iterate the network 10000 times. That means run, backpropagate and repeat that 10 000 times
         for i in range(0, 10000):
             # Keep track of generation
             generation += 1
@@ -46,9 +47,9 @@ if train:
             images, labels = get_image_batch(batch_size, True)
             # Get the loss
             loss = NeuralNetwork.train(nn, images, labels, 0.1)
-            # Print new best
+            # Print the generation and the loss
             print(f"Generation: {str(generation)}, Loss: {str(loss)}")
-
+            # We will keep track of the best loss soo far. For now it hasn't got any use
             if loss < best:
                 best = loss
     # We added try and finnaly so you can abort the code and it will still save
@@ -59,17 +60,20 @@ if train:
     
     
 if test:
-    # Test code
+    # Test the neural network
+    # Get n random images from the dataset
+    # Note you don't need to call load_all_images() as here it will load the files once again, because usually you don't test the neural network that often
     images, labels = get_image_batch(batch_size, False)
+    # Get the accuracy with NeuralNetwork.test()
     accuracy = NeuralNetwork.test(nn, images, labels)
+    # print the accuracy
     print("Accuracy: " + str(accuracy))
 
 # Get your own photo
-import cv2
-import tkinter as tk
-from PIL import Image, ImageTk
-
 if diy:
+    # Call the function that takes the photo which returns the np.array of the photo
     img = take_picture()
+    # Run the input trough the neuralnetwork and get the prediction
     pred = NeuralNetwork.feedForward(nn, img)
+    # Print the prediction
     print(pred)

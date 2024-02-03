@@ -106,23 +106,33 @@ class NeuralNetwork:
     # In testing period, get how many images where classified correctly
     @staticmethod
     def get_accuracy(prediction, y):
-        # Round the prediction, subtract the true solution, sum it, and print the errors of n predictions
+        # In this function, we get the prediction and y_labels
+        # We round the prediction, so it is either 1 or 0, and we look how many were correct
+        # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
+        # Also print how many were wrong of how many inputs ina  siutable format
         print(str(int(sum(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
         return (len(prediction)-int(sum(np.round(prediction)-y))) / len(prediction)
     
     @staticmethod
     def train(network, X, y, learning_rate = 0.1):
         # Run the neuralnetwork, calculate the loss and do backpropagation to the neural network and return the loss
+        # Run the input value to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
+        # Calculate the loss
         loss = NeuralNetwork.get_loss(prediction, y)
+        # Run backwardpropagation
         NeuralNetwork.backward(network, X, y, prediction, learning_rate)
+        # return the loss
         return loss
 
     def test(network, X, y):
-
+        # This function will test the accuracy of the neural network without changing any weights/biases
+        # Run the inputs to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
-        
+
+        # Get the accuracy with the function above
         accuracy = NeuralNetwork.get_accuracy(prediction, y)
+        # Return the accuracy
         return accuracy
     
 #---Class for one layer of the neural network---
