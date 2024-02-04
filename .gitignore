@@ -7,4 +7,4 @@ mnist_test.csv
 train_labels.npy
 train_pixels.npy
 __pycache__
-openml
+Dataset
