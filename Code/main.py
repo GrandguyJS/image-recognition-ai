@@ -18,7 +18,7 @@ test = False
 
 # Download the images if not already
 # Load the images into RAM for time-saving
-load_images(save_path)
+#load_images(save_path) # Uncomment this line, to load all images. Essential if you want to access dataset batch
 
 
 def train(network, epochs, gensperepoch):
