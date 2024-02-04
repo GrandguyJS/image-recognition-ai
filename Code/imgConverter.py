@@ -49,10 +49,7 @@ def show_image(index):
 
 def convert_image(image_path):
     img = Image.open(image_path).convert("L")
-    
+
     if img.size != (28, 28):
         img = img.reshape((28,28))
     return np.array(img).flatten()
-
-
-
