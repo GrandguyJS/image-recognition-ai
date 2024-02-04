@@ -29,7 +29,7 @@ def save_object(obj, filename):
     with open(filename, 'wb') as outp:  # Overwrites any existing file.
         pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
 
-def loadFormerNetwork(filename):
+def loadNetwork(filename):
     # If a best Network is saved, load it and return it
     if(os.path.isfile(filename)):
         #Open the best network file
@@ -40,3 +40,10 @@ def loadFormerNetwork(filename):
 
 def getnum(array):
     return np.where(array == 1)[0][0]
+
+def getName(array):
+    name = ""
+    for i in array:
+        name += str(i) 
+        name += "_"
+    return name[:-1]

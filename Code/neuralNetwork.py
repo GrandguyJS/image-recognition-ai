@@ -5,6 +5,8 @@ import json
 
 import numpy as np
 
+import os
+
 #---Class for the neural network---
 class NeuralNetwork:
     
@@ -12,8 +14,9 @@ class NeuralNetwork:
     # Eg.: [50, 70, 100, 2] has 50 inputs, 2 hidden layers with 70 an 100 neurons and 2 outputs
     def __init__(self, neuronCounts):
         self.levels = [] # Stores the levels
-
-        self.accuracy = 0 # Stores the accuracy of this network
+        self.loss = 1 # Stores the accuracy of this network
+        self.accuracy = 0
+        self.classifier = utils.getName(neuronCounts)
 
         # Creates the levels in the levels array
         for i in range(0, len(neuronCounts) - 1):
@@ -25,13 +28,10 @@ class NeuralNetwork:
     # Will return an array of 0 and 1
     # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(network, givenInputs): # Input correct result
+    def feedForward(network, outputs): # Input correct result
         # Calculates the first level
-        
-        outputs = Level.feedForward(givenInputs, network.levels[0])
-
         # Loops through all following levels and updates outputs
-        for i in range(1, len(network.levels)):
+        for i in range(0, len(network.levels)):
             # The level outputs are always the inputs of the new level
             outputs = Level.feedForward(outputs, network.levels[i])
 
@@ -55,12 +55,18 @@ class NeuralNetwork:
             random_values_weights = np.random.uniform(-1, 1, level.weights.shape) # Random weight values
             level.weights = level.weights + (random_values_weights - level.weights) * amount # Change the weights with the random weights by specific amount
     @staticmethod
-    def backward(network, X, y, prediction, learning_rate = 0.2):
+    def backward(network, X, y, prediction, learning_rate = 0.2, loss_calculator=None):
         # Just don't ask me how this works. I don't understand this myself, but basically you look what wights are causing the output the most, and you change them in a specific direction relative to your error
         # How many training examples in the input
         dataset_size = X.shape[0] # Amount of inputs
 
         levels_inverted = network.levels[::-1] # Turns the levels around
+
+        if loss_calculator is not None:
+            print("Gotcha")
+            loss = NeuralNetwork.categorical_binary_entropy_loss(prediction, y)
+        else: 
+            loss = 1
 
         # Stores updated weights and biases
         updated_z = []
@@ -91,9 +97,9 @@ class NeuralNetwork:
             index = len(updated_z) - i - 1
 
             # Change the weights and biases with the new calculated weights and biases by amount
-            network.levels[i].weights -= float(learning_rate) * updated_w[index].T
+            network.levels[i].weights -= float(learning_rate) * updated_w[index].T * loss
 
-            network.levels[i].biases -= float(learning_rate) * updated_b[index][0]
+            network.levels[i].biases -= float(learning_rate) * updated_b[index][0] * loss
     
 
     #Returns the accuracy of the network
@@ -103,6 +109,10 @@ class NeuralNetwork:
         # The vaerage, of the absolute difference of all outputs
         return np.mean(abs(y - prediction))
 
+    @staticmethod
+    def categorical_binary_entropy_loss(y_pred, y_true):
+        return -np.sum(y_true * np.log(y_pred + 10**-100))
+
     # In testing period, get how many images where classified correctly
     @staticmethod
     def get_accuracy(prediction, y):
@@ -111,33 +121,48 @@ class NeuralNetwork:
         # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
         # Also print how many were wrong of how many inputs ina  siutable format
         print(str(abs(int(np.sum(np.round(prediction)-y)))) + f" wrong out of {str(len(prediction))}")
-        accuracy = abs(len(prediction)-int(np.sum(np.round(prediction)-y))) / len(prediction)
+        accuracy = 1.0 - (abs(int(np.sum(np.round(prediction)-y))) / len(prediction))
         return accuracy
     
     @staticmethod
-    def train(network, X, y, learning_rate = 0.1):
+    def train(network, X, y, learning_rate = 0.0001, loss_calculator = None):
         # Run the neuralnetwork, calculate the loss and do backpropagation to the neural network and return the loss
         # Run the input value to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
         # Calculate the loss
-        loss = NeuralNetwork.get_loss(prediction, y)
+        
         # Run backwardpropagation
-        NeuralNetwork.backward(network, X, y, prediction, learning_rate)
+        if learning_rate == "adam2":
+            loss = np.mean(np.square(abs(prediction-y)))
+            learning_rate = loss / 10
+        elif learning_rate == "adam":
+            loss = NeuralNetwork.get_loss(prediction, y)
+            learning_rate = loss / 10
+        else:
+            loss = NeuralNetwork.get_loss(prediction, y)
+            learning_rate = learning_rate
+            
+        
+        NeuralNetwork.backward(network, X, y, prediction, learning_rate, loss_calculator)
+        # Set the neural networks loss
+        network.loss = loss
         # return the loss
         return loss
 
+    @staticmethod
     def test(network, X, y):
         # This function will test the accuracy of the neural network without changing any weights/biases
         # Run the inputs to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
         # Get the accuracy with the function above
         accuracy = NeuralNetwork.get_accuracy(prediction, y)
+        # set the networks accuracy
+        network.accuracy = accuracy
         # Return the accuracy
         return accuracy
     
 #---Class for one layer of the neural network---
 class Level:
-
     def __init__(self, inputCount, outputCount):
         self.inputs = np.zeros(inputCount) #Array of inputs with the length of inputCount
         self.outputs = np.zeros(outputCount) #Array of outputs with the length of outputCount

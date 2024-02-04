@@ -8,6 +8,8 @@ from sklearn.datasets import fetch_openml
 
 from PIL import Image
 
+import utils
+
 def load_images(save_path):
     # Dataset
     mnist = fetch_openml("mnist_784", data_home=save_path)
@@ -44,5 +46,13 @@ def show_image(index):
     img.show()
 
     return X_train[index] / 255.0
+
+def convert_image(image_path):
+    img = Image.open(image_path).convert("L")
+    
+    if img.size != (28, 28):
+        img = img.reshape((28,28))
+    return np.array(img).flatten()
+
 
 
