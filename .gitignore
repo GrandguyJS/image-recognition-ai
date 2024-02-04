@@ -7,8 +7,9 @@ mnist_test.csv
 train_labels.npy
 train_pixels.npy
 __pycache__
-Dataset
+openml
 784_128_64_10.pkl
 784_300_10.pkl
 784_800_10.pkl
 784_1024_10.pkl
+!Dataset/Number1.jpg
