@@ -2,63 +2,47 @@
 import os
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
+
+import sklearn
+from sklearn.datasets import fetch_openml 
 
 from PIL import Image
 
-output_dir = "./Dataset/" # Where will the converted photo_arrays get saved
-trainpath = "./Dataset/mnist_train.csv"
-testpath = "./Dataset/mnist_test.csv"
+def load_images(save_path):
+    # Dataset
+    mnist = fetch_openml("mnist_784", data_home=save_path)
 
-# Only use once
-def load_csv(train = True):
+    X, y = mnist["data"].values, mnist["target"].values
+
+    #Train dataset with first 60K numbers
+    global X_train 
+    global y_train 
+    global X_test
+    global y_test
+
+    y_label = np.zeros((600000, 10))
+    for i in range(0, X.shape[0]):
+        y_label[i, int(y[i])] = 1
+
+    X_train, y_train = X[:60000], y_label[:60000].astype(int)
+    # Test dataset with 10K numbers
+    X_test, y_test = X[60000:], y_label[60000:].astype(int)
+
+def get_batch(size, train=True):
     if train:
-        df = pd.read_csv(trainpath)
+        X, y = X_train, y_train
     else:
-        df = pd.read_csv(testpath)
+        X, y = X_test, y_test
 
-    # Convert labels to one-hot encoding using pandas' get_dummies
-    labels = pd.get_dummies(df.iloc[:, 0], columns=np.arange(10), prefix='label', dtype=int).values
+    idx = np.random.choice(np.arange(X.shape[0]), size, replace=False)
 
-    # Normalize pixel values and convert to NumPy array
-    pixels = (df.iloc[:, 1:].values / 255.0).astype(np.float32)
-
-    # Save as NumPy array
-    if train:
-        np.save(output_dir + "train_labels.npy", labels)
-        np.save(output_dir + "train_pixels.npy", pixels)
-    else:
-        np.save(output_dir + "test_labels.npy", labels)
-        np.save(output_dir + "test_pixels.npy", pixels)
-
-def load_data(train=True):
-    if train:
-        filename1 = "train_labels.npy"
-        filename2 = "train_pixels.npy"
-    else:
-        filename1 = "test_labels.npy"
-        filename2 = "test_pixels.npy"
-
-    if not os.path.isfile(os.path.join(output_dir, filename1)):
-        load_csv(train)
-
-    global labels
-    global numbers
-
-    # Load labels and numbers directly
-    labels = np.load(os.path.join(output_dir, filename1), allow_pickle=True)
-    numbers = np.load(os.path.join(output_dir, filename2), allow_pickle=True)
-
-    return True
-
-def get_batch(size):
-    idx = np.random.choice(np.arange(len(labels)), size, replace=False)
-    return numbers[idx], labels[idx]
+    return X[idx] / 255.0, y[idx]
 
 def show_image(index):
-    image_array = numbers[index].reshape((28, 28)) * 255.0
-    image = Image.fromarray(image_array)
-    image.show()
-    
-def get_image_array(index):
-    return numbers[index]
+    img = X_train[index].reshape((28, 28)).astype(np.uint8)
+    img = Image.fromarray(img)
+    img.show()
+
+    return X_train[index] / 255.0
+
+

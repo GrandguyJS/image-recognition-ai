@@ -39,4 +39,4 @@ def loadFormerNetwork(filename):
         return None
 
 def getnum(array):
-    return np.argmax(array == 1)
+    return np.where(array == 1)[0][0]
