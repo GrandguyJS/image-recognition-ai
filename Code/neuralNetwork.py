@@ -120,8 +120,8 @@ class NeuralNetwork:
         # We round the prediction, so it is either 1 or 0, and we look how many were correct
         # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
         # Also print how many were wrong of how many inputs ina  siutable format
-        print(str(abs(int(np.sum(np.round(prediction)-y)))) + f" wrong out of {str(len(prediction))}")
-        accuracy = 1.0 - (abs(int(np.sum(np.round(prediction)-y))) / len(prediction))
+        print(str(np.sum(abs(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
+        accuracy = 1.0 - (np.sum(abs(np.round(prediction)-y)) / len(prediction))
         return accuracy
     
     @staticmethod
@@ -130,7 +130,6 @@ class NeuralNetwork:
         # Run the input value to get the prediction
         prediction = NeuralNetwork.feedForward(network, X)
         # Calculate the loss
-        
         # Run backwardpropagation
         if learning_rate == "adam2":
             loss = np.mean(np.square(abs(prediction-y)))
@@ -158,6 +157,14 @@ class NeuralNetwork:
         accuracy = NeuralNetwork.get_accuracy(prediction, y)
         # set the networks accuracy
         network.accuracy = accuracy
+
+        array = abs(y-np.round(prediction))
+        wrongs = {0: 0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
+        # Print what it has done wrong
+        for i in range(0, len(y)):
+            for j in np.where(array[i] == 1.0)[0]:
+                wrongs[j] += 1 
+        print(wrongs)
         # Return the accuracy
         return accuracy
     
