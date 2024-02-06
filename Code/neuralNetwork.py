@@ -18,33 +18,17 @@ class NeuralNetwork:
         self.accuracy = 0
         self.classifier = utils.getName(neuronCounts)
 
-        # Creates the levels in the levels array
         for i in range(0, len(neuronCounts) - 1):
-            # Creates a new level with the current neuron count as input and the following as output
             newLevel = Level(neuronCounts[i], neuronCounts[i+1])
             self.levels.append(newLevel)
-
-    # Calculates the ouptut for the whole network, using the given inputs
-    # Will return an array of 0 and 1
-    # givenInputs is an array of numbers
     @staticmethod
-    def feedForward(network, outputs): # Input correct result
-        # Calculates the first level
-        # Loops through all following levels and updates outputs
+    def feedForward(network, outputs):
         for i in range(0, len(network.levels)):
-            # The level outputs are always the inputs of the new level
             outputs = Level.feedForward(outputs, network.levels[i])
-
-        # Return the output of the last level
         return outputs
     
-
-    # Randomly mutates the network by a certain amount
-    # amount=1: every value is random
-    # amount=0: no change at all
     @staticmethod
     def mutate(network, amount):
-
         for level in network.levels:
 
             # Mutates the biases by amount
@@ -56,10 +40,7 @@ class NeuralNetwork:
             level.weights = level.weights + (random_values_weights - level.weights) * amount # Change the weights with the random weights by specific amount
     @staticmethod
     def backward(network, X, y, prediction, learning_rate = 0.2, loss_calculator=None):
-        # Just don't ask me how this works. I don't understand this myself, but basically you look what wights are causing the output the most, and you change them in a specific direction relative to your error
-        # How many training examples in the input
         dataset_size = X.shape[0] # Amount of inputs
-
         levels_inverted = network.levels[::-1] # Turns the levels around
 
         if loss_calculator is not None:
@@ -68,7 +49,6 @@ class NeuralNetwork:
         else: 
             loss = 1
 
-        # Stores updated weights and biases
         updated_z = []
         updated_w = []
         updated_b = []
@@ -120,9 +100,12 @@ class NeuralNetwork:
         # We round the prediction, so it is either 1 or 0, and we look how many were correct
         # Then we return how many were wrong and the accuracy. 1.0 = perfect 0 = bad
         # Also print how many were wrong of how many inputs ina  siutable format
-        print(str(np.sum(abs(np.round(prediction)-y))) + f" wrong out of {str(len(prediction))}")
-        accuracy = 1.0 - (np.sum(abs(np.round(prediction)-y)) / len(prediction))
-        return accuracy
+        wrongs = 0
+        for i in range(0, len(prediction)):
+            if not (np.array_equal(np.round(prediction[i]), y[i])):
+                wrongs += 1
+        print(f"{wrongs} wrong out of {len(y)}")
+        return wrongs/len(y)
     
     @staticmethod
     def train(network, X, y, learning_rate = 0.0001, loss_calculator = None):
